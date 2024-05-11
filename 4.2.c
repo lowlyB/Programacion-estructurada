@@ -11,7 +11,7 @@ e. Informar los códigos de los medicamentos cuyo stock es inferior a 10 unidade
 
 #include <stdio.h>
 #include <string.h>
-#define TAM 3
+#define TAM 50
 
 typedef struct 
 {
