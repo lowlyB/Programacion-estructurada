@@ -19,3 +19,141 @@ DESCRIPCION CANTIDAD UNIDADES IMPORTE TOTAL
 XXXXXXX          XXXX          $XXXXX,XX
 
 */
+
+#include <stdio.h>
+#include <string.h>
+#define TAM 50
+
+typedef struct
+{
+    char codigo[6];
+    float precio;
+    char descripcion[31];
+    int uniVendidas;
+    float impoTotal;   
+}Producto;
+
+int cargaProductos (Producto[], int);
+int leeryvalidarInt (int);
+float leeryvalidarFloat (float);
+int busqueda (Producto[], char[], int);
+void mostrarProductos (Producto[], int);
+
+int main()
+{
+    Producto vProductos[TAM];
+    int cantProductos, cantPedida, pos, i=0;
+    char cod[6];
+    cantProductos=cargaProductos(vProductos, TAM);
+    printf("--VENTAS DEL MES--\n");
+    printf("Ingrese la cantidad de productos pedidos:\n");
+    cantPedida=leeryvalidarInt(0);
+    while (cantPedida!=0)
+    {
+        printf("Ingrese el codigo del producto:\n");
+        fflush(stdin);
+        gets(cod);
+        pos=busqueda(vProductos, cod, cantProductos);
+        if (pos!=-1)
+        {
+            for (i=0; i<cantProductos; i++)
+            {
+                if (strcmpi(vProductos[i].codigo, cod)==0)
+                {
+                    vProductos[i].uniVendidas=0;
+                    vProductos[i].impoTotal=0;
+                    vProductos[i].uniVendidas+=cantPedida;
+                    vProductos[i].impoTotal+=vProductos[i].precio*cantPedida;
+                }
+            }
+            
+            printf("Ingrese la cantidad de productos pedidos:\n");
+            cantPedida=leeryvalidarInt(0);         
+        }
+        else
+        {
+            printf("Codigo inexistente.\n");
+        }
+    }
+
+    mostrarProductos(vProductos, cantProductos);
+    return 0;
+}
+
+int cargaProductos (Producto v[], int ce)
+{
+    int i=0;
+    printf("Ingrese la descripcion del producto:\n");
+    fflush(stdin);
+    gets(v[i].descripcion);
+    while (strcmpi(v[i].descripcion, "FIN")!=0&&i<ce)
+    {
+        printf("Ingrese el codigo del producto:\n");
+        fflush(stdin);
+        gets(v[i].codigo);
+        printf("Ingrese el precio del producto:\n");
+        v[i].precio=leeryvalidarFloat(0);
+        printf("Ingrese cantidad de unidades vendidas:\n");
+        v[i].uniVendidas=leeryvalidarInt(0);
+        printf("Ingrese el importe total vendido el mes anterior:\n");
+        v[i].impoTotal=leeryvalidarFloat(0);
+        i++;
+        printf("Ingrese la descripcion del producto:\n");
+        fflush(stdin);
+        gets(v[i].descripcion);
+    }
+    return i;
+}
+
+int leeryvalidarInt (int x)
+{
+    int error=0, dato;
+    do
+    {
+        if (error)
+            printf("Dato invalido. Reingrese:\n");
+        else
+            error=1;
+        scanf("%d", &dato);
+    } while (dato<x);
+    return dato;
+}
+
+float leeryvalidarFloat (float x)
+{
+    int error=0;
+    float dato;
+    do
+    {
+        if (error)
+            printf("Dato invalido. Reingrese:\n");
+        else
+            error=1;
+        scanf("%f", &dato);
+    } while (dato<=x);
+    return dato;
+}
+
+int busqueda (Producto v[], char c[], int ce)
+{
+    int i=0, pos=-1;
+    while (pos==-1&&i<ce)
+    {
+        if (strcmpi(v[i].codigo, c)==0)
+            pos=i;
+        else
+            i++;
+    }
+    return pos;
+}
+
+void mostrarProductos(Producto v[], int ce)
+{
+    int i;
+    printf("--LISTADO--\n");
+    printf("\n%6s  %-21s%8s","Descripcion","Cant uni vend","Impor total vendido");
+    for (i=0;i<ce;i++)
+        
+            printf("\n%6s  \t%-21d\t%8.2f",v[i].descripcion, v[i].uniVendidas, v[i].impoTotal);
+    
+}
